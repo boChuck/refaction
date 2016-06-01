@@ -27,8 +27,12 @@ namespace refactor_me.Controllers
         public Product GetProduct(Guid id)
         {
             var product = new Product(id);
+
+            // format statement for readability
             if (product.IsNew)
+            {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
 
             return product;
         }
@@ -37,6 +41,9 @@ namespace refactor_me.Controllers
         [HttpPost]
         public void Create(Product product)
         {
+            // avoiding null obect reference error
+            if (product == null) return;
+
             product.Save();
         }
 
@@ -52,8 +59,11 @@ namespace refactor_me.Controllers
                 DeliveryPrice = product.DeliveryPrice
             };
 
+            // format if statement for readability
             if (!orig.IsNew)
+            {
                 orig.Save();
+            }
         }
 
         [Route("{id}")]
@@ -61,7 +71,12 @@ namespace refactor_me.Controllers
         public void Delete(Guid id)
         {
             var product = new Product(id);
-            product.Delete();
+
+            // only existing product needs delete 
+            if (!product.IsNew)
+            {
+                product.Delete();
+            }
         }
 
         [Route("{productId}/options")]
@@ -76,8 +91,12 @@ namespace refactor_me.Controllers
         public ProductOption GetOption(Guid productId, Guid id)
         {
             var option = new ProductOption(id);
-            if (option.IsNew)
+
+            // throw exception if option is new or option's product is different product
+            if (option.IsNew || option.ProductId != productId)
+            {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
 
             return option;
         }
@@ -86,13 +105,16 @@ namespace refactor_me.Controllers
         [HttpPost]
         public void CreateOption(Guid productId, ProductOption option)
         {
+            // avoid null object reference error
+            if (option == null) return;
+   
             option.ProductId = productId;
             option.Save();
         }
 
         [Route("{productId}/options/{id}")]
         [HttpPut]
-        public void UpdateOption(Guid id, ProductOption option)
+        public void UpdateOption(Guid productId, Guid id, ProductOption option)
         {
             var orig = new ProductOption(id)
             {
@@ -100,8 +122,12 @@ namespace refactor_me.Controllers
                 Description = option.Description
             };
 
-            if (!orig.IsNew)
+            // format if statement for readability
+            // option only saved if it is not new and is the same product
+            if (!orig.IsNew && productId == orig.ProductId)
+            {
                 orig.Save();
+            }
         }
 
         [Route("{productId}/options/{id}")]
@@ -109,7 +135,12 @@ namespace refactor_me.Controllers
         public void DeleteOption(Guid id)
         {
             var opt = new ProductOption(id);
-            opt.Delete();
+
+            // only existing production option needs delete 
+            if (!opt.IsNew)
+            {
+                opt.Delete();
+            }
         }
     }
 }

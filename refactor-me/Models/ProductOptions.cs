@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 /*
  * moved from Products class
  * having seperate model class will be easier 
@@ -8,36 +7,39 @@ using System.Data.SqlClient;
  */ 
 namespace refactor_me.Models
 {
-    public class Products
+    using System.Data.SqlClient;
+
+    public class ProductOptions
     {
-        public List<Product> Items { get; private set; }
-        public Products()
+       public List<ProductOption> Items { get; private set; }
+        public ProductOptions()
         {
-            LoadProducts(null);
+            LoadProductOptions(null);
         }
 
-        public Products(string name)
+        public ProductOptions(Guid productId)
         {
-            LoadProducts($"where lower(name) like '%{name.ToLower()}%'");
+            LoadProductOptions($"where productid = '{productId}'");
         }
 
-        private void LoadProducts(string where)
+        private void LoadProductOptions(string where)
         {
-            Items = new List<Product>();
+            Items = new List<ProductOption>();
+
              using (var connection = Helpers.NewConnection())
             {
                 SqlCommand command;
                 connection.Open();
-                using (command = new SqlCommand($"select id from product {where}",connection))
+                using (command = new SqlCommand($"select id from productoption {where}",connection))
                 {
                     var rdr = command.ExecuteReader();
                     while (rdr.Read())
                     {
                         var id = Guid.Parse(rdr["id"].ToString());
-                        Items.Add(new Product(id));
+                        Items.Add(new ProductOption(id));
                     }
                 }
-             } 
+             }
         }
     }
 }
