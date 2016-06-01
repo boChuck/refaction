@@ -21,8 +21,8 @@ namespace refactor_me.Models
 
         public ProductOption(Guid id)
         {
-            //use using statement to manage unmanaged resource, 
-            //not have to worry about connection closed for example
+            // use using statement to manage unmanaged resource, 
+            // not have to worry about connection closed for example
             using (var connection = Helpers.NewConnection())
             {
                 SqlCommand command;
@@ -45,8 +45,8 @@ namespace refactor_me.Models
 
         public void Save()
         {
-            //use using statement to manage unmanaged resource, 
-            //not have to worry about connection closed for example
+            // use using statement to manage unmanaged resource, 
+            // not have to worry about connection closed for example
             using (var connection = Helpers.NewConnection())
             {
                 connection.Open();
@@ -70,8 +70,8 @@ namespace refactor_me.Models
 
         public void Delete()
         {
-             //use using statement to manage unmanaged resource, 
-            //not have to worry about connection closed for example
+            // use using statement to manage unmanaged resource, 
+            // not have to worry about connection closed for example
             using (var connection = Helpers.NewConnection())
             {
                 connection.Open();
